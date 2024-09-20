@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: stock-api-p
+  namespace: default
+spec:
+  containers:
+  - name: sure-py-stock-services-c
+    image: ysurendrak/sure-py-stock-services:latest
+    ports:
+    - containerPort: 5000 # the port that each container inside a pod listens to for traffic. 
+      protocol: TCP
+    resources:
+      requests:
+        cpu: "10m"
+        memory: "64Mi"
+      limits:
+        cpu: "200m"
+        memory: "128Mi"

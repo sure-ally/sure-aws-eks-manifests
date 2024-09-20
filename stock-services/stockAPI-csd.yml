@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stock-api-ci-s
+spec:
+  type: ClusterIP # You cannot make requests to service (pods) from outside the cluster.
+  selector:
+    app: stock-api-d-l # Should match matchLabels of deploy for outbound
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5500
+      targetPort: api # Should match ports of deploy for inbound
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stock-api-d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stock-api-d-l # match template `labels`
+  template:
+    metadata:
+      labels:
+        app: stock-api-d-l
+    spec:
+      containers:
+      - name: stock-api-c
+        image: ysurendrak/sure-py-stock-services:latest
+        ports:
+        - name: api
+          containerPort: 5000
+        resources:
+          requests:
+            memory: 56Mi
+            cpu: 50m
+          limits:
+            memory: 56Mi
+            cpu: 50m
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - general
+      # tolerations:
+      # - key: team
+      #   operator: Equal
+      #   value: devops
+      #   effect: NoSchedule
