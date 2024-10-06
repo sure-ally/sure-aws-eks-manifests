@@ -2,30 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: stock-api-d
+  name: nginx
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: stock-api-d-l # match template `labels`
+      app: nginx
   template:
     metadata:
       labels:
-        app: stock-api-d-l
+        app: nginx
     spec:
       containers:
-      - name: stock-api-c
-        image: ysurendrak/sure-py-stock-services:latest
+      - name: nginx
+        image: nginx:1.23.4
         ports:
-        - name: api
-          containerPort: 5000 # Should match with docer expose port
+        - name: web
+          containerPort: 80
         resources:
           requests:
-            memory: 56Mi
-            cpu: 50m
+            memory: 256Mi
+            cpu: 250m
           limits:
-            memory: 56Mi
-            cpu: 50m
+            memory: 256Mi
+            cpu: 250m
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
