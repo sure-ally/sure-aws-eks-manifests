@@ -1,0 +1,20 @@
+# Virtual Service points to Destination Rules
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: news-api-d-l
+  namespace: news-ns
+spec:
+  hosts:
+    - news-api-d-l
+  http:
+    - route:
+        - destination:
+            host: news-api-d-l
+            subset: vone
+          weight: 50
+        - destination:
+            host: news-api-d-l
+            subset: vtwo
+          weight: 50
