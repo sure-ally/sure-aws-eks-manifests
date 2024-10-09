@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-api-d-l-v2
+  namespace: news-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-api-d-l # match template 'labels'
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: news-api-d-l
+        version: v2
+        istio: monitor
+    spec:
+      containers:
+      - name: news-api-c
+        image: ysurendrak/sure-py-news-services:v2.0
+        ports:
+        - name: api
+          containerPort: 5000
+        resources:
+          requests:
+            memory: 56Mi
+            cpu: 50m
+          limits:
+            memory: 56Mi
+            cpu: 50m

@@ -1,0 +1,17 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: news-api-d-l
+  namespace: news-ns
+spec:
+  host: news-api-d-l
+  subsets:
+    - name: vone
+      labels:
+        app: news-api-d-l
+        version: v1
+    - name: vtwo
+      labels:
+        app: news-api-d-l
+        version: v2

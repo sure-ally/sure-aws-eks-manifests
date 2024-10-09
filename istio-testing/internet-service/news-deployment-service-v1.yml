@@ -1,0 +1,55 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: news-ns
+  labels:
+    monitoring: prometheus
+    istio-injection: enabled
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: news-api-d-l
+  namespace: news-ns
+spec:
+  # type: ClusterIP # Default service type. You cannot make requests to service (pods) from outside the cluster.
+  selector:
+    app: news-api-d-l # Should match matchLabels of deploy for outbound
+  ports:
+    - name: http
+      # protocol: TCP
+      port: 5000
+      # targetPort: api # Should match ports of deploy for inbound
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: news-api-d-l-v1
+  namespace: news-ns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: news-api-d-l # match template 'labels'
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: news-api-d-l
+        version: v1
+        istio: monitor
+    spec:
+      containers:
+      - name: news-api-c
+        image: ysurendrak/sure-py-news-services:v1.0
+        ports:
+        - name: api
+          containerPort: 5000
+        resources:
+          requests:
+            memory: 56Mi
+            cpu: 50m
+          limits:
+            memory: 56Mi
+            cpu: 50m
